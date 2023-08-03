@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: basic-junit
+
+  profiles:
+    default: local
+
+  datasource:
+    url: jdbc:h2:mem:~/junit
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+logging:
+  level:
+    io.devfactory: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  sql:
+    init:
+      data-locations: classpath:sql/data.sql
+
+  h2:
+    console:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  sql:
+    init:
+      mode: never
