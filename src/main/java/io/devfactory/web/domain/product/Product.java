@@ -11,6 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Table(name = "tb_product")
 @Entity
 public class Product extends BaseEntity {
 

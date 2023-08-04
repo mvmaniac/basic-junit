@@ -15,7 +15,7 @@ public class ProductResponse {
   private final ProductSellingStatus sellingStatus;
   private final String name;
   private final int price;
-  
+
   @Builder
   private ProductResponse(Long id, String productNumber, ProductType type,
       ProductSellingStatus sellingStatus, String name, int price) {
