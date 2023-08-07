@@ -1,7 +1,6 @@
 package io.devfactory.web.api.controller.product.request;
 
 import io.devfactory.web.api.service.product.request.ProductCreateServiceRequest;
-import io.devfactory.web.domain.product.Product;
 import io.devfactory.web.domain.product.ProductSellingStatus;
 import io.devfactory.web.domain.product.ProductType;
 import jakarta.validation.constraints.NotBlank;
@@ -38,16 +37,6 @@ public class ProductCreateRequest {
 
   public ProductCreateServiceRequest toServiceRequest() {
     return ProductCreateServiceRequest.builder()
-        .type(type)
-        .sellingStatus(sellingStatus)
-        .name(name)
-        .price(price)
-        .build();
-  }
-
-  public Product toEntity(String nextProductNumber) {
-    return Product.builder()
-        .productNumber(nextProductNumber)
         .type(type)
         .sellingStatus(sellingStatus)
         .name(name)

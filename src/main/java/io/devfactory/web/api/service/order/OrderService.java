@@ -1,6 +1,6 @@
 package io.devfactory.web.api.service.order;
 
-import io.devfactory.web.api.controller.order.request.OrderCreateRequest;
+import io.devfactory.web.api.service.order.request.OrderCreateServiceRequest;
 import io.devfactory.web.api.service.order.response.OrderResponse;
 import io.devfactory.web.domain.order.Order;
 import io.devfactory.web.domain.order.OrderRepository;
@@ -31,7 +31,8 @@ public class OrderService {
 
   // TODO:[yhs] 재고 감소 시 동시성 이슈 문제
   @Transactional
-  public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
+  public OrderResponse createOrder(OrderCreateServiceRequest request,
+      LocalDateTime registeredDateTime) {
     final var productNumbers = request.getProductNumbers();
     final var products = this.findProductsBy(productNumbers);
 

@@ -48,7 +48,7 @@ class ProductServiceTest {
         .build();
 
     // when
-    final var productResponse = productService.createProduct(request);
+    final var productResponse = productService.createProduct(request.toServiceRequest());
 
     // then
     assertThat(productResponse)
@@ -76,7 +76,7 @@ class ProductServiceTest {
         .build();
 
     // when
-    final var productResponse = productService.createProduct(request);
+    final var productResponse = productService.createProduct(request.toServiceRequest());
 
     // then
     assertThat(productResponse)

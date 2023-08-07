@@ -1,6 +1,6 @@
 package io.devfactory.web.api.service.product;
 
-import io.devfactory.web.api.controller.product.request.ProductCreateRequest;
+import io.devfactory.web.api.service.product.request.ProductCreateServiceRequest;
 import io.devfactory.web.api.service.product.response.ProductResponse;
 import io.devfactory.web.domain.product.ProductRepository;
 import io.devfactory.web.domain.product.ProductSellingStatus;
@@ -19,7 +19,7 @@ public class ProductService {
 
   // 증가하는 번호 부여 때문에 동시성 이슈 발생 가능? -> 유니크 제약조건으로 실패 처리 or UUID
   @Transactional
-  public ProductResponse createProduct(ProductCreateRequest request) {
+  public ProductResponse createProduct(ProductCreateServiceRequest request) {
     final var latestProductNumber = productRepository.findLatestProductNumber();
 
     final var product = request.toEntity(latestProductNumber);
