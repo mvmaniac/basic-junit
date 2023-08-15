@@ -1,6 +1,7 @@
 plugins {
   id 'org.springframework.boot' version '3.1.2'
   id 'io.spring.dependency-management' version '1.1.2'
+  id 'org.asciidoctor.jvm.convert' version "3.3.2"
   id 'java'
 }
 
@@ -16,15 +17,23 @@ configurations {
   compileOnly {
     extendsFrom annotationProcessor
   }
+  asciidoctorExt
 }
 
 repositories {
   mavenCentral()
 }
 
+ext {
+  set('snippetsDir', file("build/generated-snippets"))
+}
+
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-web'
+
+  implementation 'com.google.guava:guava:32.1.2-jre'
 
   runtimeOnly 'com.h2database:h2'
 
@@ -36,13 +45,39 @@ dependencies {
   testCompileOnly 'org.projectlombok:lombok'
   testAnnotationProcessor 'org.projectlombok:lombok'
 
+  asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+  testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
+  outputs.dir snippetsDir
   useJUnitPlatform()
 }
 
 tasks.named('compileJava') {
   inputs.files(tasks.named('processResources'))
+}
+
+asciidoctor {
+  inputs.dir snippetsDir
+  configurations 'asciidoctorExt'
+
+  sources { // 특정 파일만 html로 만든다.
+    include("**/index.adoc")
+  }
+  baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
+
+  dependsOn test
+}
+
+tasks.register('copyAsciidocHTML', Copy) {
+  dependsOn asciidoctor
+  from "${asciidoctor.outputDir}"
+  into "${project.rootDir}/src/main/resources/static/docs"
+}
+
+bootJar {
+  dependsOn copyAsciidocHTML
 }
