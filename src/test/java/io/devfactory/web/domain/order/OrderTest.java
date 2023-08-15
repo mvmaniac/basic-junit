@@ -48,8 +48,7 @@ class OrderTest {
 
     // when
     final var order = Order.create(products, registeredDateTime);
-
-
+    
     // then
     assertThat(order.getRegisteredDateTime()).isEqualTo(registeredDateTime);
   }

@@ -16,13 +16,14 @@ import java.util.List;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final ProductNumberFactory productNumberFactory;
 
   // 증가하는 번호 부여 때문에 동시성 이슈 발생 가능? -> 유니크 제약조건으로 실패 처리 or UUID
   @Transactional
   public ProductResponse createProduct(ProductCreateServiceRequest request) {
-    final var latestProductNumber = productRepository.findLatestProductNumber();
+    final var nextProductNumber = productNumberFactory.createNextProductNumber();
 
-    final var product = request.toEntity(latestProductNumber);
+    final var product = request.toEntity(nextProductNumber);
     final var savedProduct = productRepository.save(product);
 
     return ProductResponse.of(savedProduct);

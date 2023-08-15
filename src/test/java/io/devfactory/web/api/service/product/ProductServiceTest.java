@@ -1,29 +1,21 @@
 package io.devfactory.web.api.service.product;
 
+import io.devfactory.IntegrationTestSupport;
 import io.devfactory.web.api.controller.product.request.ProductCreateRequest;
 import io.devfactory.web.domain.product.Product;
 import io.devfactory.web.domain.product.ProductRepository;
-import io.devfactory.web.domain.product.ProductSellingStatus;
-import io.devfactory.web.domain.product.ProductType;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestConstructor;
 
 import static io.devfactory.web.domain.product.ProductSellingStatus.SELLING;
 import static io.devfactory.web.domain.product.ProductType.HANDMADE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.springframework.test.context.TestConstructor.AutowireMode.ALL;
 
 @RequiredArgsConstructor
-@TestConstructor(autowireMode = ALL)
-@ActiveProfiles("test")
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends IntegrationTestSupport {
 
   private final ProductService productService;
   private final ProductRepository productRepository;
@@ -37,7 +29,7 @@ class ProductServiceTest {
   @Test
   void createProduct() {
     // given
-    final var product = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
+    final var product = this.buildProduct();
     productRepository.save(product);
 
     final var request = ProductCreateRequest.builder()
@@ -91,14 +83,13 @@ class ProductServiceTest {
         );
   }
 
-  private Product createProduct(String productNumber, ProductType type,
-      ProductSellingStatus sellingStatus, String name, int price) {
+  private Product buildProduct() {
     return Product.builder()
-        .productNumber(productNumber)
-        .type(type)
-        .sellingStatus(sellingStatus)
-        .name(name)
-        .price(price)
+        .productNumber("001")
+        .type(HANDMADE)
+        .sellingStatus(SELLING)
+        .name("아메리카노")
+        .price(4000)
         .build();
   }
 

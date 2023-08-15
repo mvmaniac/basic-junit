@@ -1,5 +1,6 @@
 package io.devfactory.web.api.service.order;
 
+import io.devfactory.IntegrationTestSupport;
 import io.devfactory.web.api.controller.order.request.OrderCreateRequest;
 import io.devfactory.web.domain.order.OrderRepository;
 import io.devfactory.web.domain.orderproduct.OrderProductRepository;
@@ -12,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,13 +22,9 @@ import static io.devfactory.web.domain.product.ProductType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.springframework.test.context.TestConstructor.AutowireMode.ALL;
 
 @RequiredArgsConstructor
-@TestConstructor(autowireMode = ALL)
-@ActiveProfiles("test")
-@SpringBootTest
-class OrderServiceTest {
+class OrderServiceTest extends IntegrationTestSupport {
 
   private final OrderService orderService;
 
@@ -53,9 +47,9 @@ class OrderServiceTest {
     // given
     final var registeredDateTime = LocalDateTime.now();
 
-    final var product1 = this.createProduct(BOTTLE, "001", 1000);
-    final var product2 = this.createProduct(HANDMADE, "002", 3000);
-    final var product3 = this.createProduct(BAKERY, "003", 5000);
+    final var product1 = this.buildProduct(BOTTLE, "001", 1000);
+    final var product2 = this.buildProduct(HANDMADE, "002", 3000);
+    final var product3 = this.buildProduct(BAKERY, "003", 5000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     final var stock1 = Stock.create("001", 5);
@@ -90,9 +84,9 @@ class OrderServiceTest {
     // given
     final var registeredDateTime = LocalDateTime.now();
 
-    final var product1 = this.createProduct(BOTTLE, "001", 1000);
-    final var product2 = this.createProduct(HANDMADE, "002", 3000);
-    final var product3 = this.createProduct(BAKERY, "003", 5000);
+    final var product1 = this.buildProduct(BOTTLE, "001", 1000);
+    final var product2 = this.buildProduct(HANDMADE, "002", 3000);
+    final var product3 = this.buildProduct(BAKERY, "003", 5000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     final var stock1 = Stock.create("001", 5);
@@ -128,9 +122,9 @@ class OrderServiceTest {
     // given
     final var registeredDateTime = LocalDateTime.now();
 
-    final var product1 = this.createProduct(BOTTLE, "001", 1000);
-    final var product2 = this.createProduct(HANDMADE, "002", 3000);
-    final var product3 = this.createProduct(BAKERY, "003", 5000);
+    final var product1 = this.buildProduct(BOTTLE, "001", 1000);
+    final var product2 = this.buildProduct(HANDMADE, "002", 3000);
+    final var product3 = this.buildProduct(BAKERY, "003", 5000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     // HANDMADE를 제외한 나머지 상품은 재고가 존재함
@@ -177,26 +171,27 @@ class OrderServiceTest {
     // given
     final var registeredDateTime = LocalDateTime.now();
 
-    final var product1 = this.createProduct(BOTTLE, "001", 1000);
-    final var product2 = this.createProduct(HANDMADE, "002", 3000);
-    final var product3 = this.createProduct(BAKERY, "003", 5000);
+    final var product1 = this.buildProduct(BOTTLE, "001", 1000);
+    final var product2 = this.buildProduct(HANDMADE, "002", 3000);
+    final var product3 = this.buildProduct(BAKERY, "003", 5000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     final var stock1 = Stock.create("001", 1);
     final var stock2 = Stock.create("003", 3);
     stockRepository.saveAll(List.of(stock1, stock2));
 
-    final var request = OrderCreateRequest.builder()
+    final var serviceRequest = OrderCreateRequest.builder()
         .productNumbers(List.of("001", "003", "001", "002"))
-        .build();
+        .build()
+        .toServiceRequest();
 
     // when
-    assertThatThrownBy(() -> orderService.createOrder(request.toServiceRequest(), registeredDateTime))
+    assertThatThrownBy(() -> orderService.createOrder(serviceRequest, registeredDateTime))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("재고가 부족한 상품이 있습니다.");
   }
 
-  private Product createProduct(ProductType type, String productName, int price) {
+  private Product buildProduct(ProductType type, String productName, int price) {
     return Product.builder()
         .type(type)
         .productNumber(productName)

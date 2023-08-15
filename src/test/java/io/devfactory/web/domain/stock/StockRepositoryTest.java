@@ -1,24 +1,20 @@
 package io.devfactory.web.domain.stock;
 
+import io.devfactory.IntegrationTestSupport;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.springframework.test.context.TestConstructor.AutowireMode.ALL;
 
 
 @RequiredArgsConstructor
-@TestConstructor(autowireMode = ALL)
-@ActiveProfiles("test")
-@DataJpaTest
-class StockRepositoryTest {
+@Transactional
+class StockRepositoryTest extends IntegrationTestSupport {
 
   private final StockRepository stockRepository;
 

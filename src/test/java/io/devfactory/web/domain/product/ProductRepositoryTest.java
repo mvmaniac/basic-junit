@@ -1,11 +1,10 @@
 package io.devfactory.web.domain.product;
 
+import io.devfactory.IntegrationTestSupport;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,13 +12,10 @@ import static io.devfactory.web.domain.product.ProductSellingStatus.*;
 import static io.devfactory.web.domain.product.ProductType.HANDMADE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.springframework.test.context.TestConstructor.AutowireMode.ALL;
 
 @RequiredArgsConstructor
-@TestConstructor(autowireMode = ALL)
-@ActiveProfiles("test")
-@DataJpaTest
-class ProductRepositoryTest {
+@Transactional
+class ProductRepositoryTest extends IntegrationTestSupport {
 
   private final ProductRepository productRepository;
 
@@ -27,9 +23,9 @@ class ProductRepositoryTest {
   @Test
   void findAllBySellingStatusIn() {
     // given
-    final var product1 = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
-    final var product2 = createProduct("002", HANDMADE, HOLD, "카페라떼", 4500);
-    final var product3 = createProduct("003", HANDMADE, STOP_SELLING, "팥빙수", 7000);
+    final var product1 = this.buildProduct("001", SELLING, "아메리카노", 4000);
+    final var product2 = this.buildProduct("002", HOLD, "카페라떼", 4500);
+    final var product3 = this.buildProduct("003", STOP_SELLING, "팥빙수", 7000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     // when
@@ -48,9 +44,9 @@ class ProductRepositoryTest {
   @Test
   void findAllByProductNumberIn() {
     // given
-    final var product1 = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
-    final var product2 = createProduct("002", HANDMADE, HOLD, "카페라떼", 4500);
-    final var product3 = createProduct("003", HANDMADE, STOP_SELLING, "팥빙수", 7000);
+    final var product1 = this.buildProduct("001", SELLING, "아메리카노", 4000);
+    final var product2 = this.buildProduct("002", HOLD, "카페라떼", 4500);
+    final var product3 = this.buildProduct("003", STOP_SELLING, "팥빙수", 7000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     // when
@@ -71,9 +67,9 @@ class ProductRepositoryTest {
     // given
     final var targetProductNumber = "003";
 
-    final var product1 = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
-    final var product2 = createProduct("002", HANDMADE, HOLD, "카페라떼", 4500);
-    final var product3 = createProduct(targetProductNumber, HANDMADE, STOP_SELLING, "팥빙수", 7000);
+    final var product1 = this.buildProduct("001", SELLING, "아메리카노", 4000);
+    final var product2 = this.buildProduct("002", HOLD, "카페라떼", 4500);
+    final var product3 = this.buildProduct(targetProductNumber, STOP_SELLING, "팥빙수", 7000);
     productRepository.saveAll(List.of(product1, product2, product3));
 
     // when
@@ -93,11 +89,11 @@ class ProductRepositoryTest {
     assertThat(latestProductNumber).isNull();
   }
 
-  private Product createProduct(String productNumber, ProductType type,
-      ProductSellingStatus sellingStatus, String name, int price) {
+  private Product buildProduct(String productNumber, ProductSellingStatus sellingStatus,
+      String name, int price) {
     return Product.builder()
         .productNumber(productNumber)
-        .type(type)
+        .type(HANDMADE)
         .sellingStatus(sellingStatus)
         .name(name)
         .price(price)

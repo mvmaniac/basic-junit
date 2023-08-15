@@ -1,43 +1,25 @@
 package io.devfactory.web.api.controller.product;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.devfactory.ControllerTestSupport;
 import io.devfactory.web.api.controller.product.request.ProductCreateRequest;
-import io.devfactory.web.api.service.product.ProductService;
 import io.devfactory.web.api.service.product.response.ProductResponse;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestConstructor;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static io.devfactory.web.domain.product.ProductSellingStatus.SELLING;
 import static io.devfactory.web.domain.product.ProductType.HANDMADE;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.context.TestConstructor.AutowireMode.ALL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RequiredArgsConstructor
-@TestConstructor(autowireMode = ALL)
-@ActiveProfiles("test")
-@WebMvcTest(controllers = ProductController.class)
-class ProductControllerTest {
-
-  private final MockMvc mockMvc;
-  private final ObjectMapper objectMapper;
-
-  @MockBean
-  private ProductService productService;
-
+class ProductControllerTest extends ControllerTestSupport {
+  
   @DisplayName("신규 상품을 등록한다.")
   @Test
   void createProduct() throws Exception {
